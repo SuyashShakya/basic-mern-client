@@ -1,8 +1,15 @@
 import React from "react";
 import { Box, Button, Text } from "@chakra-ui/react";
 import AppBarBackground from "../assets/svgs/endless-constellation.svg";
+import { Link, useLocation } from "react-router-dom";
 
-const AppBar = () => {
+interface AppBarProps {
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+const AppBar = (props: AppBarProps) => {
+  const { onClick } = props;
+  const location = useLocation();
   return (
     <Box
       p={2}
@@ -17,7 +24,13 @@ const AppBar = () => {
       zIndex={1}
     >
       <Text color="#ffffff">Events and Memories</Text>
-      <Button colorScheme="purple">Create new Event</Button>
+      {!location?.pathname.includes("create") && (
+        <Link to="/create">
+          <Button colorScheme="purple" onClick={onClick}>
+            Create new Event
+          </Button>
+        </Link>
+      )}
     </Box>
   );
 };

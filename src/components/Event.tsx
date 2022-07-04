@@ -19,7 +19,7 @@ const Event = () => {
         alt="name"
         borderTopRadius={5}
       />
-      <Box position="absolute" top={1} left={1}>
+      <Box position="absolute" top={1} left={2}>
         <Text color="white" fontWeight={500} fontSize={13}>
           Mark
         </Text>
