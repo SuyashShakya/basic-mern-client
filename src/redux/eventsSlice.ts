@@ -24,7 +24,7 @@ export const eventsSlice = createSlice({
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchEvents.fulfilled, (state, action) => {
       // Add user to the state array
-      state.event.pop();
+      // state.event.pop();
       state.event.push(action.payload);
     });
   },

@@ -23,8 +23,10 @@ const AppBar = (props: AppBarProps) => {
       justifyContent="space-between"
       zIndex={1}
     >
-      <Text color="#ffffff">Events and Memories</Text>
-      {!location?.pathname.includes("create") && (
+      <Link to="/">
+        <Text color="#ffffff">Events and Memories</Text>
+      </Link>
+      {location.pathname === "/" && (
         <Link to="/create">
           <Button colorScheme="purple" onClick={onClick}>
             Create new Event

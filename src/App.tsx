@@ -7,6 +7,7 @@ import { Box } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./redux/store";
 import { fetchEvents } from "./redux/eventsSlice";
+import PageNotFound from "./components/PageNotFound";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/" element={<Events />} />
           <Route path="create" element={<EventForm />} />
           <Route path="edit/:eventId" element={<EventForm />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
     </Box>
