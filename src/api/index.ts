@@ -4,8 +4,8 @@ import { FormDataType } from "../components/EventForm";
 const url = "http://localhost:5000/posts";
 
 export interface NewEventType extends FormDataType {
-  tags: string[];
-  selectedFiles: string;
+  tags?: string[];
+  selectedFiles?: string;
 }
 
 export const fetchEvents = () => axios.get(url);
