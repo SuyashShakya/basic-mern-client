@@ -11,10 +11,29 @@ const initialState: EventState = {
 };
 
 export const fetchEvents = createAsyncThunk("events", async () => {
-  const { data } = await api.fetchEvents();
-  console.log("gandu", data);
-  return data;
+  try {
+    const { data } = await api.fetchEvents();
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message);
+    }
+  }
 });
+
+export const createEvents = createAsyncThunk(
+  "create-events",
+  async (newEvent: api.NewEventType) => {
+    try {
+      const { data } = await api.createEvents(newEvent);
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  }
+);
 
 export const eventsSlice = createSlice({
   name: "events",
@@ -23,6 +42,11 @@ export const eventsSlice = createSlice({
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchEvents.fulfilled, (state, action) => {
+      // Add user to the state array
+      // state.event.pop();
+      state.event.push(action.payload);
+    });
+    builder.addCase(createEvents.fulfilled, (state, action) => {
       // Add user to the state array
       // state.event.pop();
       state.event.push(action.payload);

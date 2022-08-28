@@ -11,8 +11,11 @@ import {
 
 import { useForm } from "react-hook-form";
 import convertBase64 from "../utils/functions/convertBase64";
+import { createEvents } from "../redux/eventsSlice";
+import { useAppDispatch } from "../redux/store";
+import { NewEventType } from "../api";
 
-interface FormDataType {
+export interface FormDataType {
   creator?: string;
   title?: string;
   message?: string;
@@ -21,25 +24,27 @@ interface FormDataType {
 const EventForm = () => {
   const [selectedFile, setSelectedFile] = React.useState<unknown>();
   const [tags, setTags] = React.useState("");
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-    reset,
-  } = useForm();
+  const dispatch = useAppDispatch();
 
-  const handleUploadFile = async (e: any) => {
-    const file = e?.target.files[0];
-    console.log("file", e);
+  const { register, handleSubmit, reset } = useForm();
+
+  const handleUploadFile = async (e: React.FormEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    const file = (target.files as FileList)[0];
     const base64 = await convertBase64(file);
     setSelectedFile(base64);
   };
 
   const onSubmit = (data: FormDataType) => {
-    console.log("data", data);
+    const tagsArray = tags.split(",");
+    const dataToBeSent = {
+      ...data,
+      tags: tagsArray,
+      selectedFiles: selectedFile,
+    };
+    dispatch(createEvents(dataToBeSent as NewEventType));
   };
-  console.log("selected file", selectedFile);
+
   return (
     <Box mt="80px">
       <Container maxW="md">
@@ -63,7 +68,9 @@ const EventForm = () => {
               <Button type="submit" colorScheme="blue">
                 Submit
               </Button>
-              <Button colorScheme="red">Reset</Button>
+              <Button colorScheme="red" onClick={() => reset()}>
+                Reset
+              </Button>
             </Box>
           </Box>
         </form>
