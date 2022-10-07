@@ -1,16 +1,41 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { Box, Text, Image, IconButton } from "@chakra-ui/react";
-import { EditIcon, ArrowUpIcon, DeleteIcon } from "@chakra-ui/icons";
+import {
+  EditIcon,
+  ArrowUpIcon,
+  DeleteIcon,
+  ArrowDownIcon,
+} from "@chakra-ui/icons";
 import moment from "moment";
 import { NewEventType } from "../api";
 
 interface EventProps extends Omit<NewEventType, "selectedFiles"> {
   createdAt?: string;
   image?: string;
+  upvote?: number;
+  downvote?: number;
+  editHandler?: MouseEventHandler<HTMLButtonElement> | undefined;
+  deleteHandler?: MouseEventHandler<HTMLButtonElement> | undefined;
+  upvoteHandler?: MouseEventHandler<HTMLButtonElement> | undefined;
+  downvoteHandler?: MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
 const Event = (props: EventProps) => {
-  const { image, creator, title, tags, message, createdAt } = props;
+  const {
+    image,
+    creator,
+    title,
+    tags,
+    message,
+    createdAt,
+    upvote,
+    downvote,
+    editHandler,
+    deleteHandler,
+    upvoteHandler,
+    downvoteHandler,
+  } = props;
+  // const editData = useAppSelector((state) => state?.events?.event)
   return (
     <Box
       display="flex"
@@ -39,6 +64,7 @@ const Event = (props: EventProps) => {
         right={1}
         aria-label="Edit Event"
         icon={<EditIcon color="white" />}
+        onClick={editHandler}
       />
       <Box p={2}>
         <Box display="flex" gap={1}>
@@ -59,18 +85,30 @@ const Event = (props: EventProps) => {
             variant="ghost"
             height={5}
             py={0}
-            aria-label="Edit Event"
+            aria-label="Like Event"
             icon={<ArrowUpIcon />}
+            onClick={upvoteHandler}
           />
-          <Text fontSize={12}>55</Text>
+          <Text fontSize={12}>{upvote || 0}</Text>
+          &nbsp; &nbsp;
+          <IconButton
+            variant="ghost"
+            height={5}
+            py={0}
+            aria-label="Like Event"
+            icon={<ArrowDownIcon />}
+            onClick={downvoteHandler}
+          />
+          <Text fontSize={12}>{downvote || 0}</Text>
         </Box>
         <Box position="absolute" bottom={2} right={2}>
           <IconButton
             variant="ghost"
             height={5}
             width={1}
-            aria-label="Edit Event"
+            aria-label="Delete Event"
             icon={<DeleteIcon />}
+            onClick={deleteHandler}
           />
         </Box>
       </Box>

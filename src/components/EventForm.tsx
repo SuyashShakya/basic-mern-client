@@ -1,5 +1,5 @@
 import React from "react";
-
+import isArray from "lodash/isArray";
 import {
   Box,
   Container,
@@ -8,23 +8,28 @@ import {
   Textarea,
   Button,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import convertBase64 from "../utils/functions/convertBase64";
-import { createEvents, fetchEvents } from "../redux/eventsSlice";
-import { useAppDispatch } from "../redux/store";
+import {
+  createEvents,
+  fetchEvent,
+  fetchEvents,
+  updateEvent,
+} from "../redux/eventsSlice";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import { NewEventType } from "../api";
 
 export interface FormDataType {
   creator?: string;
   title?: string;
   message?: string;
+  tags?: string;
 }
 
 const EventForm = () => {
   const [selectedFile, setSelectedFile] = React.useState<unknown>();
-  const [tags, setTags] = React.useState("");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -35,6 +40,21 @@ const EventForm = () => {
     formState: { errors },
   } = useForm();
 
+  const params = useParams();
+  React.useEffect(() => {
+    dispatch(fetchEvent(params?.eventId || ""));
+  }, []);
+
+  const eventData = useAppSelector((state) => state?.events?.event);
+  React.useEffect(() => {
+    if (eventData) {
+      reset(eventData);
+    }
+    return () => {
+      reset();
+    };
+  }, [JSON.stringify(eventData)]);
+
   const handleUploadFile = async (e: React.FormEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     const file = (target.files as FileList)[0];
@@ -43,16 +63,28 @@ const EventForm = () => {
   };
 
   const onSubmit = (data: FormDataType) => {
-    const tagsArray = tags.split(",");
+    const tagsArray = isArray(data?.tags) ? data?.tags : data?.tags?.split(",");
     const dataToBeSent = {
       ...data,
       tags: tagsArray,
       selectedFiles: selectedFile,
     };
-    dispatch(createEvents(dataToBeSent as NewEventType)).then(() => {
-      navigate("/", { replace: false });
-      dispatch(fetchEvents());
-    });
+    if (params?.eventId) {
+      dispatch(
+        updateEvent({
+          id: params?.eventId,
+          updatedData: dataToBeSent as NewEventType,
+        })
+      ).then(() => {
+        navigate("/", { replace: false });
+        dispatch(fetchEvents());
+      });
+    } else {
+      dispatch(createEvents(dataToBeSent as NewEventType)).then(() => {
+        navigate("/", { replace: false });
+        dispatch(fetchEvents());
+      });
+    }
   };
 
   return (
@@ -102,17 +134,14 @@ const EventForm = () => {
             <Text fontSize={14} mb={-5}>
               Tags (coma separated)
             </Text>
-            <Input
-              placeholder="Enter Tags"
-              onChange={(e) => setTags(e.target.value)}
-            />
+            <Input placeholder="Enter Tags" {...register("tags")} />
             <Text fontSize={14} mb={-5}>
               Upload Image
             </Text>
             <Input type="file" border="none" onChange={handleUploadFile} />
             <Box display="flex" gap={2}>
               <Button type="submit" colorScheme="blue">
-                Submit
+                {params?.eventId ? "Update" : "Submit"}
               </Button>
               <Button colorScheme="red" onClick={() => reset()}>
                 Reset
