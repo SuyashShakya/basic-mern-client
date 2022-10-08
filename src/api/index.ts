@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FormDataType } from "../components/EventForm";
 
-const url = "http://localhost:5000/posts";
+const url = "https://events-project-demo.herokuapp.com/posts";
 
 export interface NewEventType extends Omit<FormDataType, "tags"> {
   tags?: string[];

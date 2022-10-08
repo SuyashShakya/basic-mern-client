@@ -12,14 +12,15 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import convertBase64 from "../utils/functions/convertBase64";
+
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import { NewEventType } from "../api";
 import {
   createEvents,
   fetchEvent,
   fetchEvents,
   updateEvent,
-} from "../redux/eventsSlice";
-import { useAppDispatch, useAppSelector } from "../redux/store";
-import { NewEventType } from "../api";
+} from "../redux/thunkFunctions";
 
 export interface FormDataType {
   creator?: string;
