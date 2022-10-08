@@ -48,7 +48,7 @@ const EventForm = () => {
 
   const eventData = useAppSelector((state) => state?.events?.event);
   React.useEffect(() => {
-    if (eventData) {
+    if (eventData && params?.eventId) {
       reset(eventData);
     }
     return () => {
