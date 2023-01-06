@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import isEmpty from "lodash/isEmpty";
 import {
   Box,
@@ -24,6 +24,7 @@ import {
   deleteEvent,
   downvoteEvent,
   fetchEvents,
+  likeEvent,
   upvoteEvent,
 } from "../redux/thunkFunctions";
 
@@ -51,11 +52,16 @@ const Container = (props: { children: React.ReactNode }) => {
 
 const Events = () => {
   const [currentId, setCurrentId] = React.useState("");
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("profile") as string)
+  );
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   React.useEffect(() => {
     dispatch(fetchEvents());
+    setUser(JSON.parse(localStorage.getItem("profile") as string));
   }, []);
+
   const eventData = useAppSelector((state) => state);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const events = eventData?.events?.events as fetchedEventsType[];
@@ -66,11 +72,14 @@ const Events = () => {
         {!isEmpty(events) &&
           events?.map((item, index) => (
             <Event
+              user={user}
               key={index}
               title={item?.title}
+              name={item?.name}
               creator={item?.creator}
               upvote={item?.upvote}
               downvote={item?.downvote}
+              likes={item?.likes}
               image={item?.selectedFiles}
               message={item?.message}
               tags={item?.tags}
@@ -81,6 +90,11 @@ const Events = () => {
               deleteHandler={() => {
                 onOpen();
                 setCurrentId(item?._id);
+              }}
+              likeHandler={() => {
+                dispatch(likeEvent(item?._id)).then(() =>
+                  dispatch(fetchEvents())
+                );
               }}
               upvoteHandler={() => {
                 dispatch(upvoteEvent(item?._id)).then(() =>

@@ -1,6 +1,35 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as api from "../api";
 
+export const userSignin = createAsyncThunk(
+  "signin",
+  async (signinData: api.ISignin) => {
+    try {
+      const data = await api.signIn(signinData);
+      localStorage.setItem("profile", JSON.stringify({ ...data }));
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return error;
+      }
+    }
+  }
+);
+
+export const userSignup = createAsyncThunk(
+  "signup",
+  async (signupData: api.ISignup) => {
+    try {
+      const data = await api.signUp(signupData);
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        return error;
+      }
+    }
+  }
+);
+
 export const fetchEvents = createAsyncThunk("events", async () => {
   try {
     const { data } = await api.fetchEvents();
@@ -98,3 +127,14 @@ export const downvoteEvent = createAsyncThunk(
     }
   }
 );
+
+export const likeEvent = createAsyncThunk("like-event", async (id: string) => {
+  try {
+    const { data } = await api.likeEvent(id);
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+});

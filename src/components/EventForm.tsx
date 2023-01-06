@@ -23,10 +23,11 @@ import {
 } from "../redux/thunkFunctions";
 
 export interface FormDataType {
-  creator?: string;
+  name?: string;
   title?: string;
   message?: string;
   tags?: string;
+  creator?: string;
 }
 
 const EventForm = () => {
@@ -42,6 +43,8 @@ const EventForm = () => {
   } = useForm();
 
   const params = useParams();
+  const user = JSON.parse(localStorage.getItem("profile"))?.data?.result;
+
   React.useEffect(() => {
     dispatch(fetchEvent(params?.eventId || ""));
   }, []);
@@ -67,6 +70,7 @@ const EventForm = () => {
     const tagsArray = isArray(data?.tags) ? data?.tags : data?.tags?.split(",");
     const dataToBeSent = {
       ...data,
+      name: user?.name,
       tags: tagsArray,
       selectedFiles: selectedFile,
     };
@@ -94,18 +98,6 @@ const EventForm = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box display="flex" flexDir="column" gap={5}>
             <Text fontSize="2xl">Create an event</Text>
-            <Text fontSize={14} mb={-5}>
-              Creator
-            </Text>
-            <Input
-              placeholder="Enter Creator"
-              {...register("creator", { required: true })}
-            />
-            {errors.creator && (
-              <Text fontSize={14} mt={-5}>
-                This field is required
-              </Text>
-            )}
             <Text fontSize={14} mb={-5}>
               Title
             </Text>
