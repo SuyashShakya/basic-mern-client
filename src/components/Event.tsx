@@ -1,11 +1,6 @@
 import React, { MouseEventHandler } from "react";
 import { Box, Text, Image, IconButton } from "@chakra-ui/react";
-import {
-  EditIcon,
-  ArrowUpIcon,
-  DeleteIcon,
-  ArrowDownIcon,
-} from "@chakra-ui/icons";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import moment from "moment";
 import { NewEventType } from "../api";
 import { AiOutlineLike } from "react-icons/ai";
@@ -42,12 +37,8 @@ const Event = (props: EventProps) => {
     user,
     likes,
     creator,
-    upvote,
-    downvote,
     editHandler,
     deleteHandler,
-    upvoteHandler,
-    downvoteHandler,
     likeHandler,
   } = props;
   console.log("like", likes);

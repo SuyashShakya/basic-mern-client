@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { userSignin } from "./thunkFunctions";
 
 export interface UserState {
-  user?: any;
+  user?: unknown;
 }
 
 const initialState: UserState = {
@@ -15,6 +15,7 @@ export const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(userSignin.fulfilled, (state, action) => {
+      console.log("hello", action.payload);
       state.user = action.payload;
     });
   },
